@@ -1,11 +1,12 @@
-"""Global-hotkey recorder for waypoints and node/tool templates.
+"""Grabador de atajos globales para puntos de ruta e imágenes de nodos/herramientas.
 
-While armed (listener running), anywhere on screen:
-  F7  -> append the current cursor position to the active route
-  F8  -> save a 64x64 image around the cursor as a template
+Mientras está armado (el escuchador está en marcha), en cualquier parte de la pantalla:
+  F7  -> añade la posición actual del cursor a la ruta activa
+  F8  -> guarda una imagen de 64x64 alrededor del cursor como plantilla
 
-The active route (gather / town / repair), waypoint type (minimap / screen),
-and template name are set from the GUI before you point-and-press.
+La ruta activa (recolección / ciudad / reparación), el tipo de punto
+(minimapa / pantalla) y el nombre de la plantilla se fijan desde la interfaz
+antes de apuntar y pulsar.
 """
 import os
 
@@ -26,17 +27,17 @@ class Recorder:
         self._sct = mss.mss()
         self.target = "gather_route"
         self.wp_type = "minimap"
-        self.tpl_name = "ore"
+        self.tpl_name = "mineral"
 
     def set_target(self, name):
         self.target = name
-        self.log(f"recording into: {name}")
+        self.log(f"grabando en: {name}")
 
     def set_type(self, name):
         self.wp_type = name
 
     def set_tpl_name(self, name):
-        self.tpl_name = (name or "node").strip().lower().replace(" ", "_")
+        self.tpl_name = (name or "nodo").strip().lower().replace(" ", "_")
 
     def armed(self):
         return self._listener is not None
@@ -46,13 +47,13 @@ class Recorder:
             return
         self._listener = keyboard.Listener(on_press=self._on_press)
         self._listener.start()
-        self.log("recorder ARMED — F7 = add waypoint, F8 = capture template")
+        self.log("grabador ARMADO — F7 = añadir punto, F8 = capturar plantilla")
 
     def stop(self):
         if self._listener:
             self._listener.stop()
             self._listener = None
-            self.log("recorder off")
+            self.log("grabador apagado")
 
     def _on_press(self, key):
         try:
@@ -67,7 +68,7 @@ class Recorder:
             elif key == keyboard.Key.f8:
                 self._capture()
         except Exception as exc:  # noqa: BLE001
-            self.log(f"recorder error: {exc}")
+            self.log(f"error del grabador: {exc}")
 
     def _capture(self, size=64):
         x, y = self._mouse.position
@@ -80,4 +81,4 @@ class Recorder:
             idx += 1
         path = os.path.join(C.TEMPLATE_DIR, f"{self.tpl_name}_{idx}.png")
         cv2.imwrite(path, img)
-        self.log(f"template saved: {os.path.basename(path)}")
+        self.log(f"plantilla guardada: {os.path.basename(path)}")
