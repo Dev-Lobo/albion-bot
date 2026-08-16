@@ -1,93 +1,40 @@
-Albion Gatherer — bot de recolección por visión de pantalla (versión WINDOWS)
-============================================================================
+Albion Gatherer — versión Windows (CÓDIGO FUENTE)
+=================================================
 
-Es EXACTAMENTE el mismo bot inteligente que la versión de Linux (mismo cerebro,
-misma interfaz en español, mismas cuatro inteligencias), pero preparado para
-Windows: se instala con doble clic y puede convertirse en un .exe.
+Esta carpeta es el CÓDIGO del bot para Windows. El usuario final NO necesita
+nada de aquí: descarga el programa ya listo (AlbionGatherer.exe) desde la
+sección "Releases" del repositorio y lo abre con doble clic. Toda la
+configuración se hace dentro del propio programa.
 
-Buena noticia: en Windows este bot funciona incluso mejor que en Linux, porque
-aquí no existe la limitación de Wayland/X11 — el control del ratón funciona sin
-configurar nada.
-
-
-==================  OPCIÓN A — LA MÁS FÁCIL: crear un .EXE  ==================
-
-1. Instala Python (una sola vez): https://www.python.org/downloads/
-   MUY IMPORTANTE: en la primera pantalla del instalador de Python, marca la
-   casilla "Add python.exe to PATH" antes de pulsar Instalar.
-
-2. Doble clic en   crear_exe.bat
-   Espera unos minutos. Cuando termine tendrás tu programa aquí:
-        dist\AlbionGatherer.exe
-
-3. Doble clic en   dist\AlbionGatherer.exe   y ¡listo! Se abre el bot.
-   (Puedes copiar ese .exe a donde quieras; ya funciona por sí solo.)
-
-   Nota: la primera vez Windows puede mostrar un aviso azul de SmartScreen
-   porque el .exe no está firmado. Pulsa "Más información" -> "Ejecutar de
-   todas formas". Es normal en programas caseros.
+Es el mismo bot inteligente y en español que la versión de Linux, con la
+interfaz rediseñada (estilo overlay oscuro con acento oro) y adaptado a
+Windows: la configuración se guarda en %APPDATA%\AlbionGatherer\.
 
 
-==============  OPCIÓN B — sin crear .exe (arrancar con Python)  ============
+CÓMO RECONSTRUIR EL .EXE (solo para desarrollo)
+-----------------------------------------------
+Con Python 3.10+ instalado (marcando "Add python.exe to PATH"):
 
-1. Instala Python como en la Opción A (marcando "Add to PATH").
-2. Doble clic en   instalar.bat    (monta todo, tarda un par de minutos).
-3. Doble clic en   ejecutar.bat     cada vez que quieras abrir el bot.
+    python -m venv .venv
+    .venv\Scripts\python -m pip install -r requirements.txt pyinstaller
+    .venv\Scripts\pyinstaller --onefile --windowed --name AlbionGatherer ^
+        --collect-all customtkinter app.py
 
-
-==========================  CALIBRACIÓN (5 minutos)  ========================
-
-Es igual que en la versión de Linux. Con el juego abierto:
-
-1. Pestaña Ajustes: elige tu ciudad de origen, marca los recursos, ajusta la
-   inteligencia si quieres y pulsa "Guardar ajustes".
-2. Pestaña Rutas -> "Armar grabador".
-   - Objetivo "gather_route", tipo "minimap": en el juego, pasa el ratón por
-     puntos del MINIMAPA trazando tu bucle de farmeo y pulsa F7 en cada uno.
-   - Objetivo "town_route": traza igual con F7 el camino de vuelta a tu ciudad.
-   - "repair_route" (opcional), tipo "screen": F7 sobre el NPC de reparación/
-     banco y los botones que pulsas al llegar.
-   - Imágenes de nodos: escribe un nombre (p. ej. "mineral"), pon el ratón
-     sobre un recurso en pantalla y pulsa F8. Captura 2-3 ángulos. Para detectar
-     herramienta rota, nombra una plantilla "broken" y pulsa F8 sobre ese icono.
-   - Desarma el grabador.
-3. Pestaña Control -> INICIAR. Pulsa INICIAR otra vez para detener al instante.
+El resultado queda en  dist\AlbionGatherer.exe  (un único archivo).
 
 
-================================  INTELIGENCIA  =============================
-
-- Escaneo inteligente: ve TODOS los nodos visibles y farmea varios por parada,
-  empezando por el más cercano al cursor.
-- Recolección adaptativa: detecta cuándo el nodo desaparece (recolección real
-  terminada) en vez de esperar un tiempo fijo -> más rápido y fiable.
-- Confianza adaptativa: baja el umbral si lleva rato sin ver nada y lo sube al
-  acertar -> se autocalibra sola.
-- Humanización: ruido en los tiempos, cursor en curva con pequeñas correcciones
-  y descansos tipo humano cada cierto número de recolecciones.
-Todo se enciende/apaga desde la pestaña Ajustes.
+ARCHIVOS
+--------
+- app.py               Interfaz (customtkinter, tema oscuro + oro)
+- engine.py            Máquina de estados con la lógica inteligente (hilo)
+- vision.py            Captura de pantalla + coincidencia de plantillas (mss + OpenCV)
+- input_controller.py  Control humanizado del ratón (pynput)
+- recorder.py          Grabador de puntos y plantillas por atajos F7/F8
+- config.py            Configuración (se guarda en %APPDATA%\AlbionGatherer\)
+- requirements.txt     Dependencias de Python
 
 
-==============================  NOTAS Y LÍMITES  ============================
-
-- Tus ajustes y plantillas se guardan en:  %APPDATA%\AlbionGatherer\
-  (así no se pierden aunque muevas o reconstruyas el programa).
-- Ten el juego en tu monitor PRINCIPAL y no muevas la cámara mientras farmea.
-- Las plantillas dependen de tu resolución/zoom. Si cambias cualquiera de las
-  dos, vuelve a capturarlas (F8).
-- Esto automatiza un cliente de juego en vivo y viola los Términos de Servicio
-  de Albion Online; usarlo puede acarrear el baneo de la cuenta. Esa decisión
-  es tuya.
-
-
-================================  ARCHIVOS  =================================
-
-- instalar.bat        Instalador fácil (crea el entorno e instala dependencias)
-- ejecutar.bat        Abre el bot (tras instalar.bat)
-- crear_exe.bat       Genera dist\AlbionGatherer.exe (programa independiente)
-- app.py              Interfaz gráfica (customtkinter)
-- engine.py           Máquina de estados con la lógica inteligente (hilo)
-- vision.py           Captura de pantalla + coincidencia de plantillas (mss + OpenCV)
-- input_controller.py Control humanizado del ratón (pynput)
-- recorder.py         Grabador de puntos y plantillas por atajos F7/F8
-- config.py           Carga/guardado de configuración (%APPDATA%\AlbionGatherer\)
-- requirements.txt    Lista de dependencias de Python
+AVISO
+-----
+Automatiza un cliente de juego en vivo y viola los Términos de Servicio de
+Albion Online; usarlo puede acarrear el baneo de la cuenta. Es tu decisión.
