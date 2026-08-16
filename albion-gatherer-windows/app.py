@@ -101,11 +101,11 @@ class App(ctk.CTk):
         self._current_tab = name
 
     # ============================ helpers de estilo ============================
-    def _card(self, parent, title, col=None, row=None):
+    def _card(self, parent, title, col=None, row=None, colspan=1):
         card = ctk.CTkFrame(parent, fg_color=PANEL, corner_radius=12,
                             border_width=1, border_color=BORDER)
         if col is not None:
-            card.grid(row=row, column=col, sticky="nsew", padx=6, pady=6)
+            card.grid(row=row, column=col, columnspan=colspan, sticky="nsew", padx=6, pady=6)
         else:
             card.pack(fill="x", padx=2, pady=6)
         head = ctk.CTkFrame(card, fg_color="transparent")
@@ -187,7 +187,7 @@ class App(ctk.CTk):
             self.resume_sw.select()
         self.resume_sw.pack(anchor="w", pady=6)
 
-        c3 = self._card(tab, "Afinado", col=None)
+        c3 = self._card(tab, "Afinado", col=0, row=1, colspan=2)
         self._slider(c3, "Confianza de coincidencia", "threshold", 0.5, 0.95, 45)
         self._slider(c3, "Retardo de viaje (s)", "travel_delay", 0.4, 5.0, 46)
         self._slider(c3, "Techo de recolección (s)", "gather_delay", 0.5, 6.0, 55)
