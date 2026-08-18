@@ -159,10 +159,14 @@ class App(ctk.CTk):
         c1 = self._card(tab, "Ciudad y recursos", col=0, row=0)
         ctk.CTkLabel(c1, text="Ciudad de origen", text_color=TXT_DIM,
                      font=ctk.CTkFont(FONT, 12)).pack(anchor="w")
-        self.city_entry = ctk.CTkEntry(c1, fg_color=PANEL_2, border_color=BORDER,
-                                       text_color=TXT, placeholder_text="Martlock")
-        self.city_entry.insert(0, self.cfg["home_city"])
-        self.city_entry.pack(fill="x", pady=(4, 12))
+        city_val = self.cfg["home_city"] if self.cfg["home_city"] in C.CITIES else "Martlock"
+        self.city_var = ctk.StringVar(value=city_val)
+        ctk.CTkOptionMenu(c1, variable=self.city_var, values=C.CITIES,
+                          fg_color=PANEL_2, button_color=ACCENT, button_hover_color=ACCENT_D,
+                          text_color=TXT, font=ctk.CTkFont(FONT, 13),
+                          dropdown_fg_color=PANEL, dropdown_text_color=TXT,
+                          dropdown_hover_color=BORDER,
+                          dropdown_font=ctk.CTkFont(FONT, 12)).pack(fill="x", pady=(4, 12))
         ctk.CTkLabel(c1, text="Recursos a recolectar", text_color=TXT_DIM,
                      font=ctk.CTkFont(FONT, 12)).pack(anchor="w")
         grid = ctk.CTkFrame(c1, fg_color="transparent")
@@ -287,7 +291,7 @@ class App(ctk.CTk):
 
     # ============================ acciones ============================
     def save_settings(self):
-        self.cfg["home_city"] = self.city_entry.get().strip() or "Martlock"
+        self.cfg["home_city"] = self.city_var.get()
         self.cfg["resources_selected"] = [r for r, v in self._res_vars.items() if v.get()]
         self.cfg["auto_resume"] = bool(self.resume_sw.get())
         self.cfg["max_gathers"] = int(self.cfg["max_gathers"])

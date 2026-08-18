@@ -23,6 +23,10 @@ TEMPLATE_DIR = os.path.join(CONFIG_DIR, "templates")
 ROUTE_DIR = os.path.join(CONFIG_DIR, "routes")
 CONFIG_FILE = os.path.join(CONFIG_DIR, "config.json")
 
+# Ciudades de Albion Online (para el desplegable de "Ciudad de origen").
+CITIES = ["Thetford", "Lymhurst", "Bridgewatch", "Martlock",
+          "Fort Sterling", "Caerleon", "Brecilien"]
+
 # Textos de estado compartidos entre el motor y la interfaz (deben coincidir).
 STATUS_IDLE = "Inactivo"
 STATUS_FARMING = "Recolectando"
