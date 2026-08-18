@@ -8,6 +8,7 @@ dentro de esta ventana; no hay archivos ni pasos externos.
 import customtkinter as ctk
 
 import config as C
+import icons as ICONS
 from engine import BotEngine
 from recorder import Recorder
 
@@ -47,6 +48,7 @@ class App(ctk.CTk):
         self._tab_btns = {}
         self._tab_frames = {}
         self._current_tab = None
+        self._icons = ICONS.build()   # iconos de recursos dibujados por código
 
         self._build_header()
         self._build_body()
@@ -168,11 +170,15 @@ class App(ctk.CTk):
         for i, res in enumerate(self.cfg["resources_all"]):
             var = ctk.BooleanVar(value=res in self.cfg["resources_selected"])
             self._res_vars[res] = var
-            ctk.CTkCheckBox(grid, text=res, variable=var, font=ctk.CTkFont(FONT, 12),
+            cell = ctk.CTkFrame(grid, fg_color="transparent")
+            cell.grid(row=i // 2, column=i % 2, sticky="w", padx=(0, 12), pady=5)
+            ico = self._icons.get(res)
+            if ico is not None:
+                ctk.CTkLabel(cell, image=ico, text="").pack(side="left", padx=(0, 6))
+            ctk.CTkCheckBox(cell, text=res, variable=var, font=ctk.CTkFont(FONT, 12),
                             text_color=TXT, fg_color=ACCENT, hover_color=ACCENT_D,
                             checkmark_color="#141418", border_color=LINE, corner_radius=5,
-                            width=20, height=20).grid(row=i // 2, column=i % 2,
-                                                      sticky="w", padx=(0, 14), pady=5)
+                            width=20, height=20).pack(side="left")
 
         c2 = self._card(tab, "Inteligencia", col=1, row=0)
         self._switch(c2, "Escaneo inteligente", "smart_scan")
